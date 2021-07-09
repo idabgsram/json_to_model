@@ -56,23 +56,23 @@ extension JsonKeyModels on List<DartDeclaration> {
 
   String toImportStrings() {
     return where(
-            (element) => element.imports != null && element.imports.isNotEmpty)
+            (element) =>element.imports.isNotEmpty)
         .map((e) => e.getImportStrings())
-        .where((element) => element != null && element.isNotEmpty)
+        .where((element) => element.isNotEmpty)
         .join('\n');
   }
 
   String getEnums() {
     return where((element) => element.isEnum)
         .map((e) => e.getEnum().toTemplateString())
-        .where((element) => element != null && element.isNotEmpty)
+        .where((element) =>element.isNotEmpty)
         .join('\n');
   }
 
   String getEnumConverters() {
     return where((element) => element.isEnum)
         .map((e) => e.getEnum().toConverter())
-        .where((element) => element != null && element.isNotEmpty)
+        .where((element) =>  element.isNotEmpty)
         .join('\n');
   }
 
@@ -88,7 +88,7 @@ extension JsonKeyModels on List<DartDeclaration> {
 
   List<String> getImportRaw() {
     var imports_raw = <String>[];
-    where((element) => element.imports != null && element.imports.isNotEmpty)
+    where((element) =>  element.imports.isNotEmpty)
         .forEach((element) {
       imports_raw.addAll(element.imports);
       if (element.nestedClasses.isNotEmpty) {
@@ -99,7 +99,7 @@ extension JsonKeyModels on List<DartDeclaration> {
       }
     });
     imports_raw = imports_raw
-        .where((element) => element != null && element.isNotEmpty)
+        .where((element) => element.isNotEmpty)
         .toList();
     return imports_raw;
   }

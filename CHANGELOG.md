@@ -34,3 +34,7 @@
 ## 2.0.2
 
 - downgrade args package
+
+## 2.0.3
+
+- fix dynamic handling

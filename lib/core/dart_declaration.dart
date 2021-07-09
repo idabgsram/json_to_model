@@ -38,7 +38,7 @@ class DartDeclaration {
       declaration += '${getEnum().toImport()}\n';
     }
 
-    declaration += '${stringifyDecorator(getDecorator())}$type${type!.contains('dynamic') && !type!.contains('<dynamic>')?'':'?'} $name${stringifyAssignment(assignment)};'.trim();
+    declaration += '${stringifyDecorator(getDecorator())}$type${type!.contains('dynamic') && !type!.contains('dynamic>')?'':'?'} $name${stringifyAssignment(assignment)};'.trim();
 
     return ModelTemplates.indented(declaration);
   }
