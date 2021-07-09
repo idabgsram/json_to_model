@@ -30,3 +30,7 @@
 ## 2.0.1
 
 - null safety migration
+
+## 2.0.2
+
+- downgrade args package

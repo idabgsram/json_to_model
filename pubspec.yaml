@@ -1,6 +1,6 @@
 name: json_to_model
 description: Generate model class from Json file. Based from fadhilx's json_to_model.
-version: 2.0.1
+version: 2.0.2
 homepage: https://github.com/idabgsram/json_to_model
 
 environment:
@@ -9,7 +9,7 @@ environment:
 dependencies:
   path: ^1.8.0
 
-  args: ^2.1.1
+  args: ^2.0.0
   build_runner_core: ^7.0.0
 
   io: ^1.0.3
