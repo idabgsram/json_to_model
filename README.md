@@ -1,4 +1,4 @@
-# json_to_model [![Pub Version](https://img.shields.io/pub/v/json_to_model?color=%2335d9ba&style=flat-square)](https://pub.dev/packages/json_to_model)
+# json_to_model 2.0.0
 
 Command line tool for generating Dart models (json_serializable) from Json file.
 
@@ -9,11 +9,12 @@ _partly inspired by [json_model](https://github.com/flutterchina/json_model)._
 on `pubspec.yaml`
 
 ```yaml
-dependencies:
-  json_to_model: ^1.3.13
-  build_runner: ^1.7.4
-  json_serializable: ^3.2.5
-  json_annotation: ^3.0.1
+dev_dependencies:
+  json_to_model: 
+      git:
+        url: https://github.com/idabgsram/json_to_model
+  json_annotation: ^4.0.1
+  json_serializable: ^4.1.3
 ```
 
 install using `pub get` command or if you using dart vscode/android studio, you can use install option.
@@ -80,14 +81,14 @@ part 'examples.g.dart';
 class Examples {
       Examples();
 
-  int id;
-  String title;
-  Content content;
-  List<Tag> tags;
-  String userType;
+  int? id;
+  String? title;
+  Content? content;
+  List<Tag>? tags;
+  String? userType;
   UserTypeEnum get userTypeEnum => _userTypeEnumFromString(userType);
-  User user;
-  bool published;
+  User? user;
+  bool? published;
 
   factory Examples.fromJson(Map<String,dynamic> json) => _$ExamplesFromJson(json);
   Map<String, dynamic> toJson() => _$ExamplesToJson(this);
@@ -137,7 +138,7 @@ enum UserTypeEnum { Admin, AppUser, Normal }
       - [Generated](#generated-3)
   - [Glossary](#glossary)
       - [Entities:](#entities)
-      - [Template:](#template)
+    - [Template:](#template)
   - [Support](#support)
     - [Documentation](#documentation)
     - [Bug/Error](#bugerror)
@@ -155,15 +156,17 @@ enum UserTypeEnum { Admin, AppUser, Normal }
 
 this package will read `.json` file, and generate `.dart` file, asign the `type of the value` as `variable type` and `key` as the `variable name`.
 
-| Description                                           | Expression                   | Input                                                                  | Output(declaration)                                          | Output(import)                                    |
-| :---------------------------------------------------- | ---------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------- |
-| declare type depends on the json value                | {`...`:`any type`}           | `{"id": 1, "message':'hello world'}`,                                  | `int id;`<br>`String message;`                               | -                                                 |
-| import model and asign type                           | {`...`:`'$value'`}           | `{"auth':'$user'}`                                                     | `User auth;`                                                 | `import 'user.dart'`                              |
-| import recursively                                    | {`...`:`'$../pathto/value'`} | `{"price':'$../product/price'}`                                        | `Price price;`                                               | `import '../product/price.dart'`                  |
-| asign list of type and import (can also be recursive) | {`...`:`'$[]value'`}         | `{"addreses':'$[]address'}`                                            | `List<Address> addreses;`                                    | `import 'address.dart'`                           |
-| use `json_annotation` `@JsonKey`                      | {`'@JsonKey(...)'`:`...`}    | `{"@JsonKey(ignore: true) dynamic': 'val'}`                            | `@JsonKey(ignore: true) dynamic val;`                        | -                                                 |
-| import other library(input value can be array)        | {`'@import'`:`...`}          | `{"@import':'package:otherlibrary/otherlibrary.dart'}`                 | -                                                            | `import 'package:otherlibrary/otherlibrary.dart'` |
-| write code independentally(experimental)              | {`'@_...'`:`...`}            | `{"@_ // any code here':',its like an escape to write your own code'}` | `// any code here,its like an escape to write your own code` | -                                                 |
+| Description                                           | Expression                                           | Input (Example)                                                        | Output(declaration)                                                          | Output(import)                                    |
+| :---------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------- |
+| declare type depends on the json value                | {`...`:`any type`}                                   | `{"id": 1, "message":"hello world"}`,                                  | `int? id;`<br>`String? message;`                                               | -                                                 |
+| import model and asign type                           | {`...`:`"$value"`}                                   | `{"auth":"$user"}`                                                     | `User? auth;`                                                                 | `import 'user.dart'`                              |
+| import recursively                                    | {`...`:`"$../pathto/value"`}                         | `{"price":"$../product/price"}`                                        | `Price? price;`                                                               | `import '../product/price.dart'`                  |
+| asign list of type and import (can also be recursive) | {`...`:`"$[]value"`}                                 | `{"addreses":"$[]address"}`                                            | `List<Address>? addreses;`                                                    | `import 'address.dart'`                           |
+| use `json_annotation` `@JsonKey`                      | {`"@JsonKey(...)"`:`...`}                            | `{"@JsonKey(ignore: true) dynamic": "val"}`                            | `@JsonKey(ignore: true) dynamic val;`                                        | -                                                 |
+| import other library(input value can be array)        | {`"@import"`:`...`}                                  | `{"@import":"package:otherlibrary/otherlibrary.dart"}`                 | -                                                                            | `import 'package:otherlibrary/otherlibrary.dart'` |
+| Datetime type                                         | {`...`:`"@datetime"`}                                | `{"createdAt": "@datetime:2020-02-15T15:47:51.742Z"}`                  | `DateTime? createdAt;`                                                        | -                                                 |
+| Enum type                                             | {`...`:`"@enum:(folowed by enum separated by ',')"`} | `{"@import":"@enum:admin,app_user,normal"}`                            | `enum UserTypeEnum { Admin, AppUser, Normal }`(include variable declaration) | -                                                 |
+| write code independentally(experimental)              | {`"@_..."`:`...`}                                    | `{"@_ // any code here":",its like an escape to write your own code"}` | `// any code here,its like an escape to write your own code`                 | -                                                 |
 
 ## Examples
 
@@ -194,9 +197,9 @@ part 'user.g.dart';
 class User {
       User();
 
-  int id;
-  String username;
-  bool blocked;
+  int? id;
+  String? username;
+  bool? blocked;
 
   factory User.fromJson(Map<String,dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
@@ -211,9 +214,9 @@ After that, `json_serializable` will automatically genereate `.g.dart` files
 part of 'user.dart';
 User _$UserFromJson(Map<String, dynamic> json) {
   return User()
-    ..id = json['id'] as int
-    ..username = json['username'] as String
-    ..blocked = json['blocked'] as bool;
+    ..id = json['id'] as int?
+    ..username = json['username'] as String?
+    ..blocked = json['blocked'] as bool?;
 }
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -254,10 +257,10 @@ part 'user.g.dart';
 @JsonSerializable()
 class User {
   User();
-  int id;
-  String username;
-  bool blocked;
-  Address addresses;  // $address converted to Address as type
+  int? id;
+  String? username;
+  bool? blocked;
+  Address? addresses;  // $address converted to Address as type
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }
@@ -292,10 +295,10 @@ part 'user.g.dart';
 @JsonSerializable()
 class User {
   User();
-  int id;
-  String username;
-  bool blocked;
-  List<Address> addresses; // List of Type
+  int? id;
+  String? username;
+  bool? blocked;
+  List<Address>? addresses; // List of Type
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }
@@ -332,9 +335,9 @@ class Cart {
       Cart();
 
   @JsonKey(ignore: true) dynamic md; // jsonKey generated
-  @JsonKey(name: '+1') int loved; // jsonKey generated
-  String name;
-  int age;
+  @JsonKey(name: '+1') int? loved; // jsonKey generated
+  String? name;
+  int? age;
 
   factory Cart.fromJson(Map<String,dynamic> json) => _$CartFromJson(json);
   Map<String, dynamic> toJson() => _$CartToJson(this);
@@ -387,31 +390,3 @@ $enums
 ```
 
 _for more info read [model_template.dart](/lib/core/model_template.dart)_
-
-## Support
-
-I'm open contribution for documentation, bug report, code maintenance, etc. properly submit an issue or send a pull request.
-
-### Documentation
-
-any typos, grammar error, unintended word, or ambiguous meaning. you can PR. _or maybe create an issue_. **this is the one i really need your help**
-
-### Bug/Error
-
-any bugs, unintended word comments, confusing variable naming. you can create an issue, _but also a PR really appreciated_.
-
-### Feature request
-
-any missing feature, cool feature, like prefix json key command, or dynamic changing. you can create an issue, or _write a dart extension for it_.
-
-### Contribute
-
-if you want to help maintain this library, kindly read [Contributing.md](CONTRIBUTING.md).
-
-### Or
-
-you can buy me a coffee:
-
-[![Donate Now](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UNME938XE8XJC&source=url)<br>
-[<img src='https://www.iklanlah.com/images/toyyibpay-widget-sm-p.png' alt='ToyyibPay' height='60'/>](https://toyyibpay.com/fadhilx-open-source)<br>
-Thanks for your support.

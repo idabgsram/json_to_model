@@ -19,7 +19,7 @@ class DartDeclaration {
   List<String> enumValues = [];
   List<JsonModel> nestedClasses = [];
   bool get isEnum => enumValues.isNotEmpty;
-  
+
   DartDeclaration({
     this.jsonKey,
     this.type,
@@ -35,11 +35,13 @@ class DartDeclaration {
   String toString() {
     var declaration = '';
 
-    if(isEnum) {
+    if (isEnum) {
       declaration += '${getEnum().toImport()}\n';
     }
 
-    declaration += '${stringifyDecorator(getDecorator())}$type $name${stringifyAssignment(assignment)};'.trim();
+    declaration +=
+        '${stringifyDecorator(getDecorator())}$type${type.contains('dynamic') && !type.contains('<dynamic>') ? '' : '?'} $name${stringifyAssignment(assignment)};'
+            .trim();
 
     return ModelTemplates.indented(declaration);
   }
@@ -110,8 +112,13 @@ class DartDeclaration {
 
   static DartDeclaration fromKeyValue(key, val) {
     var dartDeclaration = DartDeclaration();
-    dartDeclaration = fromCommand(Commands.valueCommands, dartDeclaration,
-        testSubject: val, key: key, value: val,);
+    dartDeclaration = fromCommand(
+      Commands.valueCommands,
+      dartDeclaration,
+      testSubject: val,
+      key: key,
+      value: val,
+    );
 
     dartDeclaration = fromCommand(Commands.keyComands, dartDeclaration,
         testSubject: key, key: key, value: val);
@@ -152,7 +159,7 @@ class DartDeclaration {
   }
 }
 
-class Enum{
+class Enum {
   final String name;
   final List<String> values;
 
@@ -172,7 +179,7 @@ $enumName
   }
 
   String toConverter() {
-   return ModelTemplates.indented('''
+    return ModelTemplates.indented('''
 $enumName _${enumName.toCamelCase()}FromString(String input) {
   return $enumName.values.firstWhere(
     (e) => _stringFrom$enumName(e) == input.toLowerCase(),

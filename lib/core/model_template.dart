@@ -66,7 +66,8 @@ class ${className ?? '/*TODO: className*/'} {
 
   static String indented(String content, {int indent}) {
     indent = indent ?? 1;
-    var indentString = (List(indent)..fillRange(0, indent, '  ')).join('');
+    var indentString = List.generate(indent, (index) => '  ').join('');
+    // var indentString = (List(indent)..fillRange(0, indent, '  ')).join('');
 
     content = content.replaceAll('\n', '\n$indentString');
 

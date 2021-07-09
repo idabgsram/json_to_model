@@ -136,7 +136,8 @@ class Commands {
       prefix: '\@datetime',
       command: '',
       notprefix: '\$\[\]',
-      callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
+      callback: (DartDeclaration self, String testSubject,
+          {String key, dynamic value}) {
         self.setName(key);
         self.type = 'DateTime';
         return self;
@@ -146,8 +147,10 @@ class Commands {
       prefix: '\@enum',
       command: ':',
       notprefix: '\$\[\]',
-      callback: (DartDeclaration self, String testSubject, {String key, dynamic value}) {
-        self.setEnumValues((value as String).substring('@enum:'.length).split(','));
+      callback: (DartDeclaration self, String testSubject,
+          {String key, dynamic value}) {
+        self.setEnumValues(
+            (value as String).substring('@enum:'.length).split(','));
         self.setName(key);
         self.type = 'String';
         return self;
@@ -155,7 +158,8 @@ class Commands {
     ),
     Command(
       type: dynamic,
-      callback: (DartDeclaration self, dynamic testSubject, {String key, dynamic value}) {
+      callback: (DartDeclaration self, dynamic testSubject,
+          {String key, dynamic value}) {
         self.setName(key);
 
         if (value == null) {

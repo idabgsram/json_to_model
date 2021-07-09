@@ -2,6 +2,9 @@ import 'package:json_to_model/json_to_model.dart';
 import 'package:args/args.dart';
 
 void main(List<String> arguments) {
+  
+  print('Guzram\'s JSON2Model');
+  print('====================');
   var source = '';
   String onlyFile;
   var output = '';
@@ -31,7 +34,7 @@ void main(List<String> arguments) {
     ..parse(arguments);
   var runner =
       JsonModelRunner(source: source, output: output, onlyFile: onlyFile);
-  runner..setup();
+  runner.setup();
 
   print('Start generating');
   if (runner.run()) {

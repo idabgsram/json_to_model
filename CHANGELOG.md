@@ -17,3 +17,12 @@
 ## 1.3.13
 
 - Better usage peek on doc
+
+## 1.4.0
+
+- nested object to map feature
+- datetime and enum object
+
+## 2.0.0
+
+- convert result to null safety
