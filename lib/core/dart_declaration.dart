@@ -8,40 +8,37 @@ import 'package:json_to_model/core/model_template.dart';
 import '../utils/extensions.dart';
 
 class DartDeclaration {
-  JsonKeyMutate jsonKey;
+  JsonKeyMutate jsonKey = JsonKeyMutate();
   List<Decorator> decorators = [];
   List<String> imports = [];
-  String type;
-  String name;
-  String assignment;
+  String? type;
+  String? name;
+  String? assignment;
   List<Command> keyComands = [];
   List<Command> valueCommands = [];
   List<String> enumValues = [];
   List<JsonModel> nestedClasses = [];
   bool get isEnum => enumValues.isNotEmpty;
-
+  bool isNullable = false; 
+  
   DartDeclaration({
-    this.jsonKey,
     this.type,
     this.name,
     this.assignment,
   }) {
     keyComands = Commands.keyComands;
     valueCommands = Commands.valueCommands;
-    jsonKey = JsonKeyMutate();
   }
 
   @override
   String toString() {
     var declaration = '';
 
-    if (isEnum) {
+    if(isEnum) {
       declaration += '${getEnum().toImport()}\n';
     }
 
-    declaration +=
-        '${stringifyDecorator(getDecorator())}$type${type.contains('dynamic') && !type.contains('<dynamic>') ? '' : '?'} $name${stringifyAssignment(assignment)};'
-            .trim();
+    declaration += '${stringifyDecorator(getDecorator())}$type${type!.contains('dynamic') && !type!.contains('<dynamic>')?'':'?'} $name${stringifyAssignment(assignment)};'.trim();
 
     return ModelTemplates.indented(declaration);
   }
@@ -55,23 +52,25 @@ class DartDeclaration {
   }
 
   String getDecorator() {
-    return decorators?.join('\n');
+    return decorators.join('\n');
   }
 
   String getImportStrings() {
     return imports
-        .where((element) => element != null && element.isNotEmpty)
+        .where((element) =>  element.isNotEmpty)
         .map((e) => "import '$e.dart';")
         .join('\n');
   }
 
-  static String getTypeFromJsonKey(String theString) {
+  static String? getTypeFromJsonKey(String? theString) {
+    if(theString == null) return null;
     var declare = theString.split(')').last.trim().split(' ');
     if (declare.isNotEmpty) return declare.first;
     return null;
   }
 
-  static String getNameFromJsonKey(String theString) {
+  static String? getNameFromJsonKey(String? theString) {
+    if(theString == null) return null;
     var declare = theString.split(')').last.trim().split(' ');
     if (declare.length > 1) return declare.last;
     return null;
@@ -112,13 +111,8 @@ class DartDeclaration {
 
   static DartDeclaration fromKeyValue(key, val) {
     var dartDeclaration = DartDeclaration();
-    dartDeclaration = fromCommand(
-      Commands.valueCommands,
-      dartDeclaration,
-      testSubject: val,
-      key: key,
-      value: val,
-    );
+    dartDeclaration = fromCommand(Commands.valueCommands, dartDeclaration,
+        testSubject: val, key: key, value: val,);
 
     dartDeclaration = fromCommand(Commands.keyComands, dartDeclaration,
         testSubject: key, key: key, value: val);
@@ -129,29 +123,29 @@ class DartDeclaration {
   }
 
   static DartDeclaration fromCommand(List<Command> commandList, self,
-      {dynamic testSubject, String key, dynamic value}) {
+      {dynamic testSubject, String? key, dynamic value}) {
     var newSelf = self;
     for (var command in commandList) {
       if (testSubject is String) {
         if ((command.prefix != null &&
-            testSubject.startsWith(command.prefix))) {
+            testSubject.startsWith(command.prefix!))) {
           if ((command.prefix != null &&
                   command.command != null &&
-                  testSubject.startsWith(command.prefix + command.command)) ||
+                  testSubject.startsWith(command.prefix! + command.command!)) ||
               (command.command != null &&
-                  testSubject.startsWith(command.command))) {
+                  testSubject.startsWith(command.command!))) {
             if (command.notprefix != null &&
-                    !testSubject.startsWith(command.notprefix) ||
+                    !testSubject.startsWith(command.notprefix!) ||
                 command.notprefix == null) {
               newSelf =
-                  command.callback(self, testSubject, key: key, value: value);
+                  command.callback!(self, testSubject, key: key!, value: value);
               break;
             }
           }
         }
       }
       if (testSubject.runtimeType == command.type) {
-        newSelf = command.callback(self, testSubject, key: key, value: value);
+        newSelf = command.callback!(self, testSubject, key: key!, value: value);
         break;
       }
     }
@@ -159,11 +153,11 @@ class DartDeclaration {
   }
 }
 
-class Enum {
-  final String name;
+class Enum{
+  final String? name;
   final List<String> values;
 
-  String get enumName => '${name.toTitleCase()}Enum';
+  String get enumName => '${name?.toTitleCase()}Enum';
 
   Enum(this.name, this.values);
 
@@ -179,7 +173,7 @@ $enumName
   }
 
   String toConverter() {
-    return ModelTemplates.indented('''
+   return ModelTemplates.indented('''
 $enumName _${enumName.toCamelCase()}FromString(String input) {
   return $enumName.values.firstWhere(
     (e) => _stringFrom$enumName(e) == input.toLowerCase(),

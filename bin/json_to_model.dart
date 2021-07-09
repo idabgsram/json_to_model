@@ -6,7 +6,7 @@ void main(List<String> arguments) {
   print('Guzram\'s JSON2Model');
   print('====================');
   var source = '';
-  String onlyFile;
+  String? onlyFile;
   var output = '';
   var argParser = ArgParser();
   argParser
@@ -14,14 +14,14 @@ void main(List<String> arguments) {
       'source',
       abbr: 's',
       defaultsTo: './jsons/',
-      callback: (v) => source = v,
+      callback: (v) => source = v??source,
       help: 'Specify source directory',
     )
     ..addOption(
       'output',
       abbr: 'o',
       defaultsTo: './lib/models/',
-      callback: (v) => output = v,
+      callback: (v) => output = v??output,
       help: 'Specify models directory',
     )
     ..addOption(

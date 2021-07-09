@@ -15,14 +15,14 @@ class ModelTemplates {
       );
 
   static String defaultTemplate({
-    bool isNested,
-    String imports,
-    String fileName,
-    String className,
-    String declaration,
-    String enums,
-    String enumConverters,
-    String nestedClasses,
+    bool isNested = false,
+    String? imports,
+    String? fileName,
+    String? className,
+    String? declaration,
+    String? enums,
+    String? enumConverters,
+    String? nestedClasses,
   }) {
     var template = '';
 
@@ -64,7 +64,7 @@ class ${className ?? '/*TODO: className*/'} {
     return template;
   }
 
-  static String indented(String content, {int indent}) {
+  static String indented(String content, {int? indent}) {
     indent = indent ?? 1;
     var indentString = List.generate(indent, (index) => '  ').join('');
     // var indentString = (List(indent)..fillRange(0, indent, '  ')).join('');

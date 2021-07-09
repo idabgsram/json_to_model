@@ -1,5 +1,4 @@
 import 'package:json_to_model/core/dart_declaration.dart';
-import 'package:json_to_model/core/json_model.dart';
 import 'package:json_to_model/core/model_template.dart';
 
 extension StringExtension on String {
@@ -12,7 +11,7 @@ extension StringExtension on String {
     var words = getWords();
     var leadingWords = words.getRange(1, words.length).toList();
     var leadingWord = leadingWords.map((e) => e.toTitleCase()).join('');
-    return '${words[0].toLowerCase()}${leadingWord}';
+    return '${words[0].toLowerCase()}$leadingWord';
   }
 
   String toSnakeCase() {
@@ -27,7 +26,10 @@ extension StringExtension on String {
 
     value = trimmed.split(RegExp(r'[_\W]'));
     value = value.where((element) => element.isNotEmpty).toList();
-    value = value.expand((e) => e.split(RegExp(r'(?=[A-Z])'))).where((element) => element.isNotEmpty).toList();
+    value = value
+        .expand((e) => e.split(RegExp(r'(?=[A-Z])')))
+        .where((element) => element.isNotEmpty)
+        .toList();
 
     return value;
   }
@@ -53,7 +55,8 @@ extension JsonKeyModels on List<DartDeclaration> {
   }
 
   String toImportStrings() {
-    return where((element) => element.imports != null && element.imports.isNotEmpty)
+    return where(
+            (element) => element.imports != null && element.imports.isNotEmpty)
         .map((e) => e.getImportStrings())
         .where((element) => element != null && element.isNotEmpty)
         .join('\n');
@@ -85,13 +88,19 @@ extension JsonKeyModels on List<DartDeclaration> {
 
   List<String> getImportRaw() {
     var imports_raw = <String>[];
-    where((element) => element.imports != null && element.imports.isNotEmpty).forEach((element) {
+    where((element) => element.imports != null && element.imports.isNotEmpty)
+        .forEach((element) {
       imports_raw.addAll(element.imports);
       if (element.nestedClasses.isNotEmpty) {
-        imports_raw.addAll(element.nestedClasses.map((e) => e.imports_raw).reduce((value, element) => value..addAll(element)));
+        imports_raw.addAll(
+        element.nestedClasses
+            .map((e) => e.imports_raw)
+            .reduce((value, element) => value!..addAll(element!))!.toList());
       }
     });
-    imports_raw = imports_raw.where((element) => element != null && element.isNotEmpty).toList();
+    imports_raw = imports_raw
+        .where((element) => element != null && element.isNotEmpty)
+        .toList();
     return imports_raw;
   }
 }

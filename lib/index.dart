@@ -10,10 +10,10 @@ import './core/json_model.dart';
 class JsonModelRunner {
   String srcDir = './jsons/';
   String distDir = './lib/models/';
-  String onlyFile = './lib/models/';
+  String? onlyFile = './lib/models/';
   List<FileSystemEntity> list = [];
 
-  JsonModelRunner({String source, String output, String onlyFile})
+  JsonModelRunner({required String source,required String output, String? onlyFile})
       : srcDir = source,
         distDir = output,
         onlyFile = onlyFile;
@@ -42,10 +42,10 @@ class JsonModelRunner {
 
     // build
     if (onlyFile == null) {
-      await BuildScript(['build', '--delete-conflicting-outputs']).build();
+       BuildScript(['build', '--delete-conflicting-outputs']).build();
     } else {
       var dotSplit = path.join(srcDir, onlyFile).split('.');
-      await BuildScript(['run', (dotSplit..removeLast()).join('.') + '.dart'])
+      BuildScript(['run', (dotSplit..removeLast()).join('.') + '.dart'])
           .build();
     }
   }

@@ -1,4 +1,4 @@
-# json_to_model 2.0.0
+# json_to_model 2.0.1
 
 Command line tool for generating Dart models (json_serializable) from Json file.
 

@@ -7,14 +7,14 @@ import '../utils/extensions.dart';
 
 typedef Callback = DartDeclaration Function(
     DartDeclaration self, String testSubject,
-    {String key, dynamic value});
+    {required String key, dynamic value});
 
 class Command {
-  Type type = String;
-  String notprefix;
-  String prefix;
-  String command;
-  Callback callback;
+  Type? type = String;
+  String? notprefix;
+  String? prefix;
+  String? command;
+  Callback? callback;
   Command({
     this.type,
     this.prefix,
@@ -30,7 +30,7 @@ class Commands {
       prefix: '\@',
       command: 'JsonKey',
       callback: (DartDeclaration self, String testSubject,
-          {String key, dynamic value}) {
+          {String? key, dynamic value}) {
         var jsonKey = JsonKeyMutate.fromJsonKeyParamaString(testSubject);
         self.jsonKey &= jsonKey;
         var newDeclaration = DartDeclaration.fromCommand(valueCommands, self,
@@ -51,7 +51,7 @@ class Commands {
       prefix: '\@',
       command: 'import',
       callback: (DartDeclaration self, dynamic testSubject,
-          {String key, dynamic value}) {
+          {required String key, dynamic value}) {
         self.addImport(value);
         return self;
       },
@@ -60,7 +60,7 @@ class Commands {
       prefix: '@',
       command: '_',
       callback: (DartDeclaration self, dynamic testSubject,
-          {String key, dynamic value}) {
+          {required String key, dynamic value}) {
         self.type = key.substring(1);
         self.name = value;
         return self;
@@ -70,7 +70,7 @@ class Commands {
       prefix: '',
       command: '',
       callback: (DartDeclaration self, dynamic testSubject,
-          {String key, dynamic value}) {
+          {required String key, dynamic value}) {
         self.setName(key);
         if (value == null) {
           self.type = 'dynamic';
@@ -93,7 +93,7 @@ class Commands {
       prefix: '\$',
       command: '\[\]',
       callback: (DartDeclaration self, String testSubject,
-          {String key, dynamic value}) {
+          {required String key, dynamic value}) {
         var typeName = testSubject
             .substring(3)
             .split('/')
@@ -112,7 +112,7 @@ class Commands {
       command: '',
       notprefix: '\$\[\]',
       callback: (DartDeclaration self, String testSubject,
-          {String key, dynamic value}) {
+          {required String key, dynamic value}) {
         self.setName(key);
 
         var typeName = testSubject
@@ -136,8 +136,7 @@ class Commands {
       prefix: '\@datetime',
       command: '',
       notprefix: '\$\[\]',
-      callback: (DartDeclaration self, String testSubject,
-          {String key, dynamic value}) {
+      callback: (DartDeclaration self, String testSubject, {required String key, dynamic value}) {
         self.setName(key);
         self.type = 'DateTime';
         return self;
@@ -147,10 +146,8 @@ class Commands {
       prefix: '\@enum',
       command: ':',
       notprefix: '\$\[\]',
-      callback: (DartDeclaration self, String testSubject,
-          {String key, dynamic value}) {
-        self.setEnumValues(
-            (value as String).substring('@enum:'.length).split(','));
+      callback: (DartDeclaration self, String testSubject, {required String key, dynamic value}) {
+        self.setEnumValues((value as String).substring('@enum:'.length).split(','));
         self.setName(key);
         self.type = 'String';
         return self;
@@ -158,8 +155,7 @@ class Commands {
     ),
     Command(
       type: dynamic,
-      callback: (DartDeclaration self, dynamic testSubject,
-          {String key, dynamic value}) {
+      callback: (DartDeclaration self, dynamic testSubject, {required String key, dynamic value}) {
         self.setName(key);
 
         if (value == null) {

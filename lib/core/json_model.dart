@@ -3,14 +3,14 @@ import 'package:json_to_model/core/dart_declaration.dart';
 import '../utils/extensions.dart';
 
 class JsonModel {
-  String fileName;
-  String className;
-  String declaration;
-  String imports;
-  List<String> imports_raw;
-  String enums;
-  String enumConverters;
-  String nestedClasses;
+  String? fileName;
+  String? className;
+  String? declaration;
+  String? imports;
+  List<String>? imports_raw;
+  String? enums;
+  String? enumConverters;
+  String? nestedClasses;
 
   JsonModel(String fileName, List<DartDeclaration> dartDeclarations) {
     this.fileName = fileName;

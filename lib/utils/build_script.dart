@@ -15,17 +15,16 @@ class BuildScript {
   BuildScript(this.args);
   var localCommands = [CleanCommand(), GenerateBuildScript()];
   
-  BuildCommandRunner commandRunner;
-  List<String> args;
+  List<String>? args;
 
-  ArgResults parsedArgs;
   void build() async {
+    
+    late BuildCommandRunner commandRunner;
+    late ArgResults parsedArgs;
     var localCommandNames = localCommands.map((c) => c.name).toSet();
-
-    ArgResults parsedArgs;
     try {
       commandRunner = BuildCommandRunner([], await PackageGraph.forThisPackage());
-      parsedArgs = commandRunner.parse(args);
+      parsedArgs = commandRunner.parse(args??[]);
     } on UsageException catch (e) {
       print(red.wrap(e.message));
       print('');
@@ -52,11 +51,12 @@ class BuildScript {
 
     final logListener = Logger.root.onRecord.listen(stdIOLogListener());
     if (localCommandNames.contains(commandName)) {
-      exitCode = await commandRunner.runCommand(parsedArgs);
+     var exitCodes = await commandRunner.runCommand(parsedArgs);
+     exitCode = exitCodes??0;
     } else {
       while (
-          (exitCode = await generateAndRun(args)) == ExitCode.tempFail.code) {}
+          (exitCode = await generateAndRun(args??[])) == ExitCode.tempFail.code) {}
     }
-    await logListener?.cancel();
+    await logListener.cancel();
   }
 }
