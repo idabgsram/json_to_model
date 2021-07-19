@@ -103,7 +103,7 @@ class Commands {
             .toCamelCase();
         var toImport = testSubject.substring(3);
         self.addImport(toImport);
-        self.type = 'List<${typeName.toTitleCase()}>';
+        self.type = 'List<${typeName.toTitleCase()}${(typeName.toLowerCase().contains('dynamic')?'':'?')}>';
         return self;
       },
     ),
