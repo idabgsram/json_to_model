@@ -1,4 +1,4 @@
-# json_to_model 2.0.4
+# json_to_model 2.0.5
 
 Command line tool for generating Dart models (json_serializable) from Json file.
 
@@ -13,8 +13,8 @@ dev_dependencies:
   json_to_model: 
       git:
         url: https://github.com/idabgsram/json_to_model
-  json_annotation: ^4.0.1
-  json_serializable: ^4.1.3
+  json_serializable: ^6.1.1
+  json_annotation: ^4.4.0
 ```
 
 install using `pub get` command or if you using dart vscode/android studio, you can use install option.
