@@ -20,7 +20,7 @@ void main(List<String> arguments) {
     ..addOption(
       'output',
       abbr: 'o',
-      defaultsTo: './lib/models/',
+      defaultsTo: './lib/src/models/',
       callback: (v) => output = v??output,
       help: 'Specify models directory',
     )
