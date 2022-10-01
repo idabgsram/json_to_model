@@ -19,8 +19,8 @@ class DartDeclaration {
   List<String> enumValues = [];
   List<JsonModel> nestedClasses = [];
   bool get isEnum => enumValues.isNotEmpty;
-  bool isNullable = false; 
-  
+  bool isNullable = false;
+
   DartDeclaration({
     this.type,
     this.name,
@@ -34,11 +34,12 @@ class DartDeclaration {
   String toString() {
     var declaration = '';
 
-    if(isEnum) {
+    if (isEnum) {
       declaration += '${getEnum().toImport()}\n';
     }
-
-    declaration += '${stringifyDecorator(getDecorator())}$type${type!.contains('dynamic') && !type!.contains('dynamic>')?'':'?'} $name${stringifyAssignment(assignment)};'.trim();
+    declaration +=
+        '${stringifyDecorator(getDecorator())}${isNullable ? '' : 'late '}$type${type!.contains('dynamic') && !type!.contains('<dynamic>')?'':isNullable?'?':''} $name${stringifyAssignment(assignment)};'
+            .trim();
 
     return ModelTemplates.indented(declaration);
   }
@@ -57,20 +58,20 @@ class DartDeclaration {
 
   String getImportStrings() {
     return imports
-        .where((element) =>  element.isNotEmpty)
+        .where((element) => element.isNotEmpty)
         .map((e) => "import '$e.dart';")
         .join('\n');
   }
 
   static String? getTypeFromJsonKey(String? theString) {
-    if(theString == null) return null;
+    if (theString == null) return null;
     var declare = theString.split(')').last.trim().split(' ');
     if (declare.isNotEmpty) return declare.first;
     return null;
   }
 
   static String? getNameFromJsonKey(String? theString) {
-    if(theString == null) return null;
+    if (theString == null) return null;
     var declare = theString.split(')').last.trim().split(' ');
     if (declare.length > 1) return declare.last;
     return null;
@@ -81,6 +82,10 @@ class DartDeclaration {
   }
 
   void setName(String newName) {
+    if (newName.endsWith('?')) {
+      isNullable = true;
+      newName = newName.substring(0, newName.length - 1);
+    }
     name = newName;
     if (newName.isTitleCase() || newName.contains(RegExp(r'[_\W]'))) {
       jsonKey.addKey(name: newName);
@@ -111,8 +116,13 @@ class DartDeclaration {
 
   static DartDeclaration fromKeyValue(key, val) {
     var dartDeclaration = DartDeclaration();
-    dartDeclaration = fromCommand(Commands.valueCommands, dartDeclaration,
-        testSubject: val, key: key, value: val,);
+    dartDeclaration = fromCommand(
+      Commands.valueCommands,
+      dartDeclaration,
+      testSubject: val,
+      key: key,
+      value: val,
+    );
 
     dartDeclaration = fromCommand(Commands.keyComands, dartDeclaration,
         testSubject: key, key: key, value: val);
@@ -153,7 +163,7 @@ class DartDeclaration {
   }
 }
 
-class Enum{
+class Enum {
   final String? name;
   final List<String> values;
 
@@ -173,7 +183,7 @@ $enumName
   }
 
   String toConverter() {
-   return ModelTemplates.indented('''
+    return ModelTemplates.indented('''
 $enumName _${enumName.toCamelCase()}FromString(String input) {
   return $enumName.values.firstWhere(
     (e) => _stringFrom$enumName(e) == input.toLowerCase(),
