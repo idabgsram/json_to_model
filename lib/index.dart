@@ -9,8 +9,8 @@ import './core/json_model.dart';
 
 class JsonModelRunner {
   String srcDir = './jsons/';
-  String distDir = './lib/models/';
-  String? onlyFile = './lib/models/';
+  String distDir = './lib/src/models/';
+  String? onlyFile = './lib/src/models/';
   List<FileSystemEntity> list = [];
 
   JsonModelRunner({required String source,required String output, String? onlyFile})
